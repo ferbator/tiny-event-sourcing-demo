@@ -5,10 +5,12 @@ import java.util.*
 import ru.quipy.logic.StatusColor.GREEN
 
 fun ProjectAggregateState.createProject(id: UUID, title: String, createdBy: UUID): ProjectCreatedEvent {
+    val status = createStatusInProject(id, GREEN, "CREATED")
     return ProjectCreatedEvent(
         projectId = id,
         title = title,
         createdBy = UUID.randomUUID(),
+        statusId = status.statusId
     )
 }
 
@@ -25,9 +27,9 @@ fun ProjectAggregateState.addParticipantToProject(projectId: UUID, userId: UUID)
 }
 
 fun ProjectAggregateState.createStatusInProject(projectId: UUID, color: StatusColor, value: String): StatusCreatedEvent {
-    if (this.getId() != projectId) {
-        throw IllegalArgumentException("Mismatching project ID")
-    }
+//    if (this.projectStatuses.isNotEmpty() && this.getId() != projectId ) {
+//        throw IllegalArgumentException("Mismatching project ID")
+//    }
 
     return StatusCreatedEvent(projectId, UUID.randomUUID(), color, value)
 }

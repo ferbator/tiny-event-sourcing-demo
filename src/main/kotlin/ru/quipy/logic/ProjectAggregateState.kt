@@ -37,6 +37,11 @@ class ProjectAggregateState : AggregateState<UUID, ProjectAggregate> {
         projectId = event.projectId
         name = event.title
         createdBy = event.createdBy
+        projectStatuses[event.statusId] = StatusEntity(
+            event.statusId,
+            StatusColor.GREEN,
+            "CREATED"
+        )
         updatedAt = createdAt
     }
 
