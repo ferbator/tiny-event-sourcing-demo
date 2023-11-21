@@ -1,42 +1,43 @@
 package ru.quipy.logic
 
-import ru.quipy.api.ProjectCreatedEvent
-import ru.quipy.api.TagAssignedToTaskEvent
-import ru.quipy.api.TagCreatedEvent
-import ru.quipy.api.TaskCreatedEvent
+import ru.quipy.api.*
 import java.util.*
+import ru.quipy.logic.StatusColor.GREEN
 
-
-// Commands : takes something -> returns event
-// Here the commands are represented by extension functions, but also can be the class member functions
-
-fun ProjectAggregateState.create(id: UUID, title: String, creatorId: String): ProjectCreatedEvent {
+fun ProjectAggregateState.createProject(id: UUID, title: String, createdBy: UUID): ProjectCreatedEvent {
+    val status = createStatusInProject(id, GREEN, "CREATED")
     return ProjectCreatedEvent(
         projectId = id,
         title = title,
-        creatorId = creatorId,
+        createdBy = UUID.randomUUID(),
+        statusId = status.statusId
     )
 }
 
-fun ProjectAggregateState.addTask(name: String): TaskCreatedEvent {
-    return TaskCreatedEvent(projectId = this.getId(), taskId = UUID.randomUUID(), taskName = name)
+fun ProjectAggregateState.addParticipantToProject(projectId: UUID, userId: UUID): ParticipantAddedToProjectEvent {
+    if (this.getId() != projectId) {
+        throw IllegalArgumentException("Mismatching project ID")
+    }
+
+    if (participantsID.contains(userId)) {
+        throw IllegalArgumentException("User already a participant")
+    }
+
+    return ParticipantAddedToProjectEvent(projectId, userId)
 }
 
-fun ProjectAggregateState.createTag(name: String): TagCreatedEvent {
-    if (projectTags.values.any { it.name == name }) {
-        throw IllegalArgumentException("Tag already exists: $name")
-    }
-    return TagCreatedEvent(projectId = this.getId(), tagId = UUID.randomUUID(), tagName = name)
+fun ProjectAggregateState.createStatusInProject(projectId: UUID, color: StatusColor, value: String): StatusCreatedEvent {
+//    if (this.projectStatuses.isNotEmpty() && this.getId() != projectId ) {
+//        throw IllegalArgumentException("Mismatching project ID")
+//    }
+
+    return StatusCreatedEvent(projectId, UUID.randomUUID(), color, value)
 }
 
-fun ProjectAggregateState.assignTagToTask(tagId: UUID, taskId: UUID): TagAssignedToTaskEvent {
-    if (!projectTags.containsKey(tagId)) {
-        throw IllegalArgumentException("Tag doesn't exists: $tagId")
+fun ProjectAggregateState.deleteStatus(statusId: UUID): StatusDeletedEvent {
+    if (!projectStatuses.containsKey(statusId)) {
+        throw IllegalArgumentException("Status doesn't exist: $statusId")
     }
 
-    if (!tasks.containsKey(taskId)) {
-        throw IllegalArgumentException("Task doesn't exists: $taskId")
-    }
-
-    return TagAssignedToTaskEvent(projectId = this.getId(), tagId = tagId, taskId = taskId)
+    return StatusDeletedEvent(statusId)
 }
