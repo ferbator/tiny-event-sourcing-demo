@@ -14,8 +14,7 @@ class UserController(
     val userEsService: EventSourcingService<UUID, UserAggregate, UserAggregateState>
 ) {
     @PostMapping("")
-    fun createUser(@RequestBody body: UserDTO
-    ) : UserRegisteredEvent {
+    fun createUser(@RequestBody body: UserDTO) : UserRegisteredEvent {
         return userEsService.create { it.registerUser(UUID.randomUUID(), body.nickname, body.name, body.password) }
     }
 
