@@ -14,8 +14,8 @@ class ProjectController(
     val projectEsService: EventSourcingService<UUID, ProjectAggregate, ProjectAggregateState>,
 ) {
     @PostMapping("/{projectTitle}")
-    fun createProject(@PathVariable projectTitle: String, @RequestParam createdBy: String) : ProjectCreatedEvent {
-        return projectEsService.create { it.createProject(UUID.randomUUID(), projectTitle, UUID.randomUUID()) } //todo: createdBy
+    fun createProject(@PathVariable projectTitle: String, @RequestParam createdBy: UUID) : ProjectCreatedEvent {
+        return projectEsService.create { it.createProject(UUID.randomUUID(), projectTitle, createdBy) }
     }
 
     @PostMapping("/{projectId}/statuses")
@@ -24,7 +24,7 @@ class ProjectController(
         @RequestParam color: StatusColor,
         @RequestParam status: String
     ): StatusCreatedEvent {
-        return projectEsService.update(projectId) { it.createStatusInProject(projectId, color, status) }
+        return projectEsService.update(projectId) { it.createStatusInProject(color, status) }
     }
 
     @GetMapping("/{projectId}")
@@ -50,9 +50,9 @@ class ProjectController(
         return ResponseEntity.ok(state.getStatusById(statusId) ?: throw NotFoundException("Status not found"))
     }
 
-    @PostMapping("/{projectId}/participants/{userId}")
-    fun addParticipant(@PathVariable projectId: UUID, @PathVariable userId: UUID): ParticipantAddedToProjectEvent {
-        return projectEsService.update(projectId) { it.addParticipantToProject(projectId, userId) } //todo: убрать projectId + добавить проверку на пользователя-участника
+    @PostMapping("/{projectId}/participants/{userId}/by/{participantId}")
+    fun addParticipant(@PathVariable projectId: UUID, @PathVariable userId: UUID, @PathVariable participantId: UUID): ParticipantAddedToProjectEvent {
+        return projectEsService.update(projectId) { it.addParticipantToProject(participantId, userId) }
     }
 
     @DeleteMapping("/{projectId}/statuses/{statusId}")

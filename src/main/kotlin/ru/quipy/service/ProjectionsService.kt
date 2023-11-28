@@ -56,7 +56,13 @@ class ProjectionsService (
             .orElseThrow { NoSuchElementException("Project not found") }
 
         val tasks = taskRepository.findAllByProjectId(projectID)
-            .map { task -> TaskDTO(task.taskName, task.taskId, task.projectId ) }
+            .map { task -> TaskDTO(
+                title = task.taskName,
+                projectId = task.projectId,
+                statusId = task.statusId,
+                createdBy = task.createdBy,
+                assignedToID = task.assignedToID
+            ) }
 
         return ProjectSubscriberController.ProjectDetailsDTO(
             projectId = project.projectId,
@@ -65,5 +71,7 @@ class ProjectionsService (
         )
     }
 
-    //todo 'Пользователь должен иметь возможность получить список всех задач с определённым статусом'
+    fun getStatusByID(statusID: UUID): TaskStatus? {
+        return taskStatusRepository.findByStatusId(statusID);
+    }
 }

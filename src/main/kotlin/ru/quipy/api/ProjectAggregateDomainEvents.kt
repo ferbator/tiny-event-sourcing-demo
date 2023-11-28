@@ -39,6 +39,7 @@ const val MEMBER_ADDED_TO_PROJECT_EVENT = "MEMBER_ADDED_TO_PROJECT_EVENT"
 class ParticipantAddedToProjectEvent(
     val projectId: UUID,
     val userId: UUID,
+    val participantId: UUID,
     createdAt: Long = System.currentTimeMillis()
 ) : Event<ProjectAggregate>(
     name = MEMBER_ADDED_TO_PROJECT_EVENT,
