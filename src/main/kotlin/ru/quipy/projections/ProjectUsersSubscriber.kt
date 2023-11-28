@@ -24,7 +24,7 @@ class ProjectUsersSubscriber(
         subscriptionsManager.createSubscriber(ProjectAggregate::class, "user-project") {
 
             `when`(ParticipantAddedToProjectEvent::class) { event ->
-                projectUsersRepository.save(ProjectUser(event.projectId, event.userId, event.name))
+                projectUsersRepository.save(ProjectUser(event.projectId, event.userId))
             }
         }
     }
@@ -34,7 +34,6 @@ class ProjectUsersSubscriber(
 data class ProjectUser(
     val projectId: UUID,
     val userId: UUID,
-    val userName: String,
 )
 
 @Repository

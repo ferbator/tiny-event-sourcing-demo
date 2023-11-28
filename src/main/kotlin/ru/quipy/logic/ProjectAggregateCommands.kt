@@ -23,7 +23,10 @@ fun ProjectAggregateState.addParticipantToProject(projectId: UUID, userId: UUID)
         throw IllegalArgumentException("User already a participant")
     }
 
-    return ParticipantAddedToProjectEvent(projectId, userId)
+    return ParticipantAddedToProjectEvent(
+        projectId = projectId,
+        userId = userId
+    )
 }
 
 fun ProjectAggregateState.createStatusInProject(projectId: UUID, color: StatusColor, value: String): StatusCreatedEvent {

@@ -50,20 +50,10 @@ class ProjectController(
         return ResponseEntity.ok(state.getStatusById(statusId) ?: throw NotFoundException("Status not found"))
     }
 
-    @PostMapping("/{projectId}/participants")
-    fun addParticipant(@PathVariable projectId: UUID, @RequestParam userId: UUID): ParticipantAddedToProjectEvent {
+    @PostMapping("/{projectId}/participants/{userId}")
+    fun addParticipant(@PathVariable projectId: UUID, @PathVariable userId: UUID): ParticipantAddedToProjectEvent {
         return projectEsService.update(projectId) { it.addParticipantToProject(projectId, userId) }
     }
-
-//    @DeleteMapping("/{projectId}")
-//    fun deleteProject(@PathVariable projectId: UUID): ProjectDeletedEvent {
-//        return projectEsService.update(projectId) { it.deleteProject(projectId) }
-//    }
-
-//    @DeleteMapping("/{projectId}/tasks/{taskId}")
-//    fun deleteTask(@PathVariable projectId: UUID, @PathVariable taskId: UUID): TaskDeletedEvent {
-//        return projectEsService.update(projectId) { it.deleteTask(taskId) }
-//    }
 
     @DeleteMapping("/{projectId}/statuses/{statusId}")
     fun deleteStatus(@PathVariable projectId: UUID, @PathVariable statusId: UUID): StatusDeletedEvent {
