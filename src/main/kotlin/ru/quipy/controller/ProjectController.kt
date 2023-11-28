@@ -15,7 +15,7 @@ class ProjectController(
 ) {
     @PostMapping("/{projectTitle}")
     fun createProject(@PathVariable projectTitle: String, @RequestParam createdBy: String) : ProjectCreatedEvent {
-        return projectEsService.create { it.createProject(UUID.randomUUID(), projectTitle, UUID.randomUUID()) }
+        return projectEsService.create { it.createProject(UUID.randomUUID(), projectTitle, UUID.randomUUID()) } //todo: createdBy
     }
 
     @PostMapping("/{projectId}/statuses")
@@ -29,7 +29,7 @@ class ProjectController(
 
     @GetMapping("/{projectId}")
     fun getProject(@PathVariable projectId: UUID) : ProjectAggregateState? {
-        return projectEsService.getState(projectId)
+        return projectEsService.getState(projectId) //todo shine2: -projectEsService.getState
     }
 
     @GetMapping("/{projectId}/tasks")
@@ -52,7 +52,7 @@ class ProjectController(
 
     @PostMapping("/{projectId}/participants/{userId}")
     fun addParticipant(@PathVariable projectId: UUID, @PathVariable userId: UUID): ParticipantAddedToProjectEvent {
-        return projectEsService.update(projectId) { it.addParticipantToProject(projectId, userId) }
+        return projectEsService.update(projectId) { it.addParticipantToProject(projectId, userId) } //todo: убрать projectId + добавить проверку на пользователя-участника
     }
 
     @DeleteMapping("/{projectId}/statuses/{statusId}")

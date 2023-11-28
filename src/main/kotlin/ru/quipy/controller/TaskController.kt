@@ -31,7 +31,7 @@ class TaskController(
 
     @PutMapping("/rename/{taskId}")
     fun renameTask(@PathVariable taskId: UUID, @RequestParam newTitle: String): TaskRenamedEvent {
-        return taskEsService.update(taskId) { it.renameTask(taskId, newTitle) }
+        return taskEsService.update(taskId) { it.renameTask(taskId, newTitle) } //todo только участник проекта
     }
 
     @PostMapping("/assign/{taskId}")
@@ -40,7 +40,7 @@ class TaskController(
     }
 
     @PostMapping("/status/{taskId}")
-        fun assignStatusToTask(@PathVariable taskId: UUID, @RequestParam statusId: UUID): StatusAssignedToTaskEvent {
+    fun assignStatusToTask(@PathVariable taskId: UUID, @RequestParam statusId: UUID): StatusAssignedToTaskEvent {
         return taskEsService.update(taskId) { it.assignStatusToTask(taskId, statusId) }
     }
 //

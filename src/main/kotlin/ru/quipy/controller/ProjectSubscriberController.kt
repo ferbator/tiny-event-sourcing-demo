@@ -24,7 +24,7 @@ class ProjectSubscriberController(
     }
     @GetMapping("/projects/{projectId}")
     fun getProjectDetails(@PathVariable projectId: UUID): ResponseEntity<ProjectDetailsDTO> {
-        val projectDetails = projectionsService.getProjectDetails(projectId)
+        val projectDetails = projectionsService.getProjectDetails(projectId) //todo объединить с users, чтобы выполнить: 'На странице проекта должны быть отображены название проекта, список задач с названиями и деталями, список участников проекта.'
         return ResponseEntity.ok(projectDetails)
     }
 

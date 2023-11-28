@@ -11,7 +11,7 @@ import ru.quipy.streams.annotation.SubscribeEvent
 @AggregateSubscriber(
     aggregateClass = UserAggregate::class, subscriberName = "user-demo-subs-stream"
 )
-class AnnotationBasedUserEventsSubscriber {
+class AnnotationBasedUserEventsSubscriber {  //todo remove
 
     val logger: Logger = LoggerFactory.getLogger(AnnotationBasedProjectEventsSubscriber::class.java)
 

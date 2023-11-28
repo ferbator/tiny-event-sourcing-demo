@@ -11,7 +11,7 @@ import ru.quipy.streams.annotation.SubscribeEvent
 @AggregateSubscriber(
     aggregateClass = TaskAggregate::class, subscriberName = "task-demo-subs-stream"
 )
-class AnnotationBasedTaskEventsSubscriber {
+class AnnotationBasedTaskEventsSubscriber {  //todo remove
 
     val logger: Logger = LoggerFactory.getLogger(AnnotationBasedProjectEventsSubscriber::class.java)
 

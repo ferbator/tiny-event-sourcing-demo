@@ -3,6 +3,7 @@ package ru.quipy.logic
 import ru.quipy.api.*
 import java.util.*
 
+//todo выпилить id из почти всех команд
 fun TaskAggregateState.createTaskInProject(id: UUID, title: String, projectId: UUID, statusId: UUID): TaskCreatedEvent {
     return TaskCreatedEvent(UUID.randomUUID(), title, projectId, statusId)
 }

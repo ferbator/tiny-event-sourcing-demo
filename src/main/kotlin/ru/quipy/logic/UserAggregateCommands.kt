@@ -5,4 +5,5 @@ import java.util.*
 
 fun UserAggregateState.registerUser(userId: UUID, nickname: String, name: String, password: String): UserRegisteredEvent {
     return UserRegisteredEvent(userId, nickname, name, password)
+    //todo проверить 'если пользователь существует'
 }

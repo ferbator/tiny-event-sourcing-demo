@@ -29,7 +29,7 @@ fun ProjectAggregateState.addParticipantToProject(projectId: UUID, userId: UUID)
     )
 }
 
-fun ProjectAggregateState.createStatusInProject(projectId: UUID, color: StatusColor, value: String): StatusCreatedEvent {
+fun ProjectAggregateState.createStatusInProject(projectId: UUID, color: StatusColor, value: String): StatusCreatedEvent { //todo shine2: projectId
 //    if (this.projectStatuses.isNotEmpty() && this.getId() != projectId ) {
 //        throw IllegalArgumentException("Mismatching project ID")
 //    }
