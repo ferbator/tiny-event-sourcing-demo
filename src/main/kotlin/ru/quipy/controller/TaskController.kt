@@ -4,12 +4,14 @@ import org.springframework.web.bind.annotation.*
 import ru.quipy.api.*
 import ru.quipy.core.EventSourcingService
 import ru.quipy.logic.*
+import ru.quipy.service.ProjectionsService
 import java.util.*
 
 @RestController
 @RequestMapping("/tasks")
 class TaskController(
     val taskEsService: EventSourcingService<UUID, TaskAggregate, TaskAggregateState>,
+    val projectionsService: ProjectionsService,
 ) {
 
     @PostMapping("/create")
@@ -32,8 +34,15 @@ class TaskController(
     }
 
     @PutMapping("/rename/{taskId}/by/{participantId}")
-    fun renameTask(@PathVariable taskId: UUID, @RequestParam newTitle: String, @PathVariable participantId: UUID): TaskRenamedEvent {
-        return taskEsService.update(taskId) { it.renameTask(newTitle, participantId) }
+    fun renameTask(
+        @PathVariable taskId: UUID,
+        @RequestParam newTitle: String,
+        @PathVariable participantId: UUID
+    ): TaskRenamedEvent {
+        return taskEsService.update(taskId) { it.renameTask(
+            newTitle,
+            participantId
+        ) { projectId -> projectionsService.findAllByProjectId(projectId) } }
     }
 
     @PostMapping("/assign/{taskId}")

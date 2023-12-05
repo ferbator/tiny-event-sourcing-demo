@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.stereotype.Repository
 import org.springframework.stereotype.Service
 import ru.quipy.api.*
+import ru.quipy.config.EventSourcingLibConfiguration
 import ru.quipy.core.EventSourcingService
 import ru.quipy.logic.UserAggregateState
 import ru.quipy.logic.registerUser
@@ -34,9 +35,6 @@ class ProjectEventsSubscriber(
             `when`(ProjectCreatedEvent::class) { event ->
                 projectRepository.save(Project(event.projectId, event.title))
                 logger.info("Project created: {} by user {}", event.title, event.createdBy)
-                userEsService.update(event.createdBy) {
-                    it.registerUser(event.createdBy, "", "", "")
-                }
             }
 
             `when`(StatusCreatedEvent::class) { event ->

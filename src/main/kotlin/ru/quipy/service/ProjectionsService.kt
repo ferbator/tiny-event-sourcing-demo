@@ -22,6 +22,14 @@ class ProjectionsService (
         return userAccountRepository.existsUserAccountsByNickname(nickname)
     }
 
+    fun existsUserAccountByUserId(id: UUID): Boolean {
+        return userAccountRepository.existsUserAccountByUserId(id)
+    }
+
+    fun findAllByProjectId(id: UUID): List<UUID>{
+        return projectUsersRepository.findAllByProjectId(id).map { it.userId }
+    }
+
     fun getAllTaskProjection(): List<Task> {
         return taskRepository.findAll()
     }
@@ -63,11 +71,18 @@ class ProjectionsService (
                 createdBy = task.createdBy,
                 assignedToID = task.assignedToID
             ) }
+        val users = projectUsersRepository.findAllByProjectId(projectID)
+            .map { user -> UserAccount(
+                nickname = userAccountRepository.findByUserId(user.userId).nickname,
+                userName = userAccountRepository.findByUserId(user.userId).userName,
+                userId = user.userId
+            ) }
 
         return ProjectSubscriberController.ProjectDetailsDTO(
             projectId = project.projectId,
             projectName = project.projectTitle,
-            tasks = tasks
+            tasks = tasks,
+            users = users
         )
     }
 

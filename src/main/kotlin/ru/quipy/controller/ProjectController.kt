@@ -27,11 +27,6 @@ class ProjectController(
         return projectEsService.update(projectId) { it.createStatusInProject(color, status) }
     }
 
-    @GetMapping("/{projectId}")
-    fun getProject(@PathVariable projectId: UUID) : ProjectAggregateState? {
-        return projectEsService.getState(projectId) //todo shine2: -projectEsService.getState
-    }
-
     @GetMapping("/{projectId}/tasks")
     fun getAllTasks(@PathVariable projectId: UUID): ResponseEntity<Set<UUID>> {
         val state = projectEsService.getState(projectId) ?: throw NotFoundException("Project not found")
