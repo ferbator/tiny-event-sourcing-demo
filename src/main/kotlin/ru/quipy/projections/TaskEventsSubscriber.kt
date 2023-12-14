@@ -29,7 +29,7 @@ class TaskEventsSubscriber(
     fun init() {
         subscriptionsManager.createSubscriber(TaskAggregate::class, "task-subscriber") {
             `when`(TaskCreatedEvent::class) { event ->
-                taskRepository.save(Task(event.taskId, event.taskName))
+                taskRepository.save(Task(event.taskId, event.taskName, event.projectId))
                 logger.info("Task created: {}", event.taskName)
             }
 
@@ -60,8 +60,11 @@ class TaskEventsSubscriber(
 data class Task(
     @Id
     val taskId: UUID,
-    var taskName: String
+    var taskName: String,
+    var projectId: UUID
 )
 
 @Repository
-interface TaskRepository : MongoRepository<Task, UUID>
+interface TaskRepository : MongoRepository<Task, UUID>{
+    fun findAllByProjectId(projectID: UUID): List<Task>
+}

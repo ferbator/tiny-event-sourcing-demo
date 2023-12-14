@@ -29,8 +29,8 @@ class UserEventsSubscriber(
     fun init() {
         subscriptionsManager.createSubscriber(UserAggregate::class, "users-subscriber") {
             `when`(UserRegisteredEvent::class) { event ->
-                userAccountRepository.save(UserAccount(event.userId, event.userName))
-                logger.info("User {} registered with nickname {}", event.userId, event.nickname)
+                userAccountRepository.save(UserAccount(event.userId, event.userName, event.nickname))
+                logger.info("User {} registered with name {} & nickname {}", event.userId, event.nickname, event.nickname)
             }
         }
     }
@@ -40,8 +40,13 @@ class UserEventsSubscriber(
 data class UserAccount(
     @Id
     val userId: UUID,
-    var userName: String
+    var userName: String,
+    var nickname: String
 )
 
 @Repository
 interface UserAccountRepository : MongoRepository<UserAccount, UUID>
+{
+    fun getAllByUserId(userIds: List<UUID>): List<UserAccount>
+    fun existsUserAccountsByNickname(nickname: String): Boolean
+}
