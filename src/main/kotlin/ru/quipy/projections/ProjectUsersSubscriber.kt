@@ -31,7 +31,7 @@ class ProjectUsersSubscriber(
 }
 
 @Document("user-project")
-data class ProjectUser( // todo nickname убрать в доке или добавить здесь
+data class ProjectUser(
     val projectId: UUID,
     val userId: UUID,
 )

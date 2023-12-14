@@ -12,6 +12,8 @@ class TaskCreatedEvent(
     val taskName: String,
     val projectId: UUID,
     val statusId: UUID,
+    val createdBy: UUID,
+    val assignedToID: UUID,
     createdAt: Long = System.currentTimeMillis(),
 ) : Event<TaskAggregate>(
     name = TASK_CREATED_EVENT,
@@ -24,6 +26,7 @@ const val TASK_RENAMED_EVENT = "TASK_RENAMED_EVENT"
 class TaskRenamedEvent(
     val taskId: UUID,
     val newTitle: String,
+    val participantId: UUID,
     createdAt: Long = System.currentTimeMillis()
 ) : Event<TaskAggregate>(
     name = TASK_RENAMED_EVENT,

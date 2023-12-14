@@ -4,12 +4,14 @@ import org.springframework.web.bind.annotation.*
 import ru.quipy.api.*
 import ru.quipy.core.EventSourcingService
 import ru.quipy.logic.*
+import ru.quipy.service.ProjectionsService
 import java.util.*
 
 @RestController
 @RequestMapping("/tasks")
 class TaskController(
     val taskEsService: EventSourcingService<UUID, TaskAggregate, TaskAggregateState>,
+    val projectionsService: ProjectionsService,
 ) {
 
     @PostMapping("/create")
@@ -19,7 +21,9 @@ class TaskController(
                 UUID.randomUUID(),
                 body.title,
                 body.projectId,
-                body.statusId
+                body.statusId,
+                body.createdBy,
+                body.assignedToID
             )
         }
     }
@@ -29,29 +33,33 @@ class TaskController(
         return taskEsService.getState(taskId)
     }
 
-    @PutMapping("/rename/{taskId}")
-    fun renameTask(@PathVariable taskId: UUID, @RequestParam newTitle: String): TaskRenamedEvent {
-        return taskEsService.update(taskId) { it.renameTask(taskId, newTitle) } //todo только участник проекта
+    @PutMapping("/rename/{taskId}/by/{participantId}")
+    fun renameTask(
+        @PathVariable taskId: UUID,
+        @RequestParam newTitle: String,
+        @PathVariable participantId: UUID
+    ): TaskRenamedEvent {
+        return taskEsService.update(taskId) { it.renameTask(
+            newTitle,
+            participantId
+        ) { projectId -> projectionsService.findAllByProjectId(projectId) } }
     }
 
     @PostMapping("/assign/{taskId}")
     fun assignTaskToUser(@PathVariable taskId: UUID, @RequestParam userId: UUID): TaskAssignedToUserEvent {
-        return taskEsService.update(taskId) { it.assignTaskToUser(taskId, userId) }
+        return taskEsService.update(taskId) { it.assignTaskToUser(userId) }
     }
 
     @PostMapping("/status/{taskId}")
     fun assignStatusToTask(@PathVariable taskId: UUID, @RequestParam statusId: UUID): StatusAssignedToTaskEvent {
-        return taskEsService.update(taskId) { it.assignStatusToTask(taskId, statusId) }
+        return taskEsService.update(taskId) { it.assignStatusToTask(statusId) }
     }
-//
-//    @PutMapping("/status/{taskId}")
-//    fun changeTaskStatus(@PathVariable taskId: UUID, @RequestParam newStatusId: UUID): TaskStatusChangedEvent {
-//        return taskEsService.update(taskId) { it.changeTaskStatus(taskId, newStatusId) }
-//    }
 }
 
 data class TaskDTO(
     val title: String,
     val projectId: UUID,
     val statusId: UUID,
+    val createdBy: UUID,
+    val assignedToID: UUID
 )
