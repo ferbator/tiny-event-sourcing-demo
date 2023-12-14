@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import ru.quipy.projections.Project
+import ru.quipy.projections.UserAccount
 import ru.quipy.service.ProjectionsService
 import java.util.*
 
@@ -31,6 +32,7 @@ class ProjectSubscriberController(
     data class ProjectDetailsDTO(
         val projectId: UUID,
         val projectName: String,
-        val tasks: List<TaskDTO>
+        val tasks: List<TaskDTO>,
+        val users: List<UserAccount>
     )
 }

@@ -2,23 +2,54 @@ package ru.quipy.logic
 
 import ru.quipy.api.*
 import java.util.*
+import ru.quipy.config.EventSourcingLibConfiguration
+    fun TaskAggregateState.createTaskInProject(
+        id: UUID,
+        title: String,
+        projectId: UUID,
+        statusId: UUID,
+        createdBy: UUID,
+        assignedToID: UUID
+    ): TaskCreatedEvent {
+        return TaskCreatedEvent(
+            taskId = id,
+            taskName = title,
+            projectId = projectId,
+            statusId = statusId,
+            createdBy = createdBy,
+            assignedToID = assignedToID
+        )
+    }
 
-fun TaskAggregateState.createTaskInProject(id: UUID, title: String, projectId: UUID, statusId: UUID): TaskCreatedEvent {
-    return TaskCreatedEvent(UUID.randomUUID(), title, projectId, statusId)
-}
+    fun TaskAggregateState.renameTask(newTitle: String, participantId: UUID, findAllParticipants: (projectId: UUID) -> List<UUID>): TaskRenamedEvent {
+        if (!findAllParticipants.invoke(projectId).contains(participantId)){
+            throw IllegalArgumentException("The user is not a participant")
+        }
 
-fun TaskAggregateState.renameTask(taskId: UUID, newTitle: String): TaskRenamedEvent {
-    return TaskRenamedEvent(taskId, newTitle)
-}
+        return TaskRenamedEvent(
+            taskId = getId(),
+            newTitle = newTitle,
+            participantId = participantId
+        )
+    }
 
-fun TaskAggregateState.assignTaskToUser(taskId: UUID, userId: UUID): TaskAssignedToUserEvent {
-    return TaskAssignedToUserEvent(taskId, userId)
-}
+    fun TaskAggregateState.assignTaskToUser(userId: UUID): TaskAssignedToUserEvent {
+        return TaskAssignedToUserEvent(
+            taskId = getId(),
+            userId = userId
+        )
+    }
 
-fun TaskAggregateState.assignStatusToTask(taskId: UUID, statusId: UUID): StatusAssignedToTaskEvent {
-    return StatusAssignedToTaskEvent(taskId, statusId)
-}
+    fun TaskAggregateState.assignStatusToTask(statusId: UUID): StatusAssignedToTaskEvent {
+        return StatusAssignedToTaskEvent(
+            taskId = getId(),
+            statusId = statusId
+        )
+    }
 
-fun TaskAggregateState.changeTaskStatus(taskId: UUID, newStatusId: UUID): TaskStatusChangedEvent {
-    return TaskStatusChangedEvent(taskId, newStatusId)
-}
+    fun TaskAggregateState.changeTaskStatus(newStatusId: UUID): TaskStatusChangedEvent {
+        return TaskStatusChangedEvent(
+            taskId = getId(),
+            newStatusId = newStatusId
+        )
+    }

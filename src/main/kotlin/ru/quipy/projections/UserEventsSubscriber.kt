@@ -49,4 +49,7 @@ interface UserAccountRepository : MongoRepository<UserAccount, UUID>
 {
     fun getAllByUserId(userIds: List<UUID>): List<UserAccount>
     fun existsUserAccountsByNickname(nickname: String): Boolean
+
+    fun existsUserAccountByUserId(userId: UUID): Boolean
+    fun findByUserId(userId: UUID): UserAccount
 }

@@ -24,9 +24,8 @@ class TaskAggregateState : AggregateState<UUID, TaskAggregate> {
         name = event.taskName
         projectId = event.projectId
         taskStatusId = event.statusId
-        // TODO create this gomno
-        createdBy = UUID.randomUUID()
-        assignedToID = UUID.randomUUID()
+        createdBy = event.createdBy
+        assignedToID = event.assignedToID
         updatedAt = createdAt
     }
 

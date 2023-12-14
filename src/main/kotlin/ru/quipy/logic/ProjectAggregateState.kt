@@ -29,9 +29,6 @@ class ProjectAggregateState : AggregateState<UUID, ProjectAggregate> {
     fun getAllStatuses(): Map<UUID, StatusEntity> {
         return projectStatuses
     }
-    fun getAllParticipantsID(): Set<UUID> {
-        return participantsID
-    }
     @StateTransitionFunc
     fun projectCreatedApply(event: ProjectCreatedEvent) {
         projectId = event.projectId

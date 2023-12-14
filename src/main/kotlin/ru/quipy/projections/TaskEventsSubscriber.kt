@@ -29,7 +29,14 @@ class TaskEventsSubscriber(
     fun init() {
         subscriptionsManager.createSubscriber(TaskAggregate::class, "task-subscriber") {
             `when`(TaskCreatedEvent::class) { event ->
-                taskRepository.save(Task(event.taskId, event.taskName, event.projectId))
+                taskRepository.save(Task(
+                    taskId = event.taskId,
+                    taskName = event.taskName,
+                    projectId = event.projectId,
+                    statusId = event.statusId,
+                    createdBy = event.createdBy,
+                    assignedToID = event.assignedToID
+                ))
                 logger.info("Task created: {}", event.taskName)
             }
 
@@ -61,7 +68,10 @@ data class Task(
     @Id
     val taskId: UUID,
     var taskName: String,
-    var projectId: UUID
+    val projectId: UUID,
+    val statusId: UUID,
+    val createdBy: UUID,
+    val assignedToID: UUID
 )
 
 @Repository

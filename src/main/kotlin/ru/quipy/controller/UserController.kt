@@ -6,16 +6,23 @@ import ru.quipy.api.UserRegisteredEvent
 import ru.quipy.core.EventSourcingService
 import ru.quipy.logic.UserAggregateState
 import ru.quipy.logic.registerUser
+import ru.quipy.service.ProjectionsService
 import java.util.*
 
 @RestController
 @RequestMapping("/users")
 class UserController(
-    val userEsService: EventSourcingService<UUID, UserAggregate, UserAggregateState>
+    val userEsService: EventSourcingService<UUID, UserAggregate, UserAggregateState>,
+    val projectionsService: ProjectionsService
 ) {
     @PostMapping("")
     fun createUser(@RequestBody body: UserDTO) : UserRegisteredEvent {
-        return userEsService.create { it.registerUser(UUID.randomUUID(), body.nickname, body.name, body.password) }
+        return userEsService.create { it.registerUser(
+            UUID.randomUUID(),
+            body.nickname,
+            body.name,
+            body.password
+        ) {userId -> projectionsService.existsUserAccountByUserId(userId) } }
     }
 
     @GetMapping("/{projectId}")
